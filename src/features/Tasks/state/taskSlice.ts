@@ -1,5 +1,5 @@
 import {Task} from "../model/Task";
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {RootState} from "../../../app/store";
 
 export interface TaskState {
@@ -13,6 +13,16 @@ const initialState: TaskState = {
     isLoading: true,
     error: null
 }
+
+const fetchData=createAsyncThunk('data/tasks',async () => {
+    try {
+        const res = await fetch('http://localhost:3001/tasks')
+        const data = await res.json();
+        return data;
+    } catch (e) {
+        throw e;
+    }
+})
 
 export const taskSlice = createSlice({
     name: 'tasks',
