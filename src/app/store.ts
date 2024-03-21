@@ -1,19 +1,13 @@
-import {Action, configureStore, ThunkAction} from "@reduxjs/toolkit";
-import taskReducer from "../features/Tasks/state/taskSlice";
-import counterReducer from "../features/Counters/state/counterSlice";
+import {configureStore} from "@reduxjs/toolkit/react";
+import {setupListeners} from "@reduxjs/toolkit/query/react";
+import {taskApi} from "../features/Tasks/state/taskSlice";
 
 export const store = configureStore({
     reducer: {
-        counter: counterReducer,
-        tasks: taskReducer,
+        [taskApi.reducerPath]: taskApi.reducer,
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(taskApi.middleware),
 });
 
-export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
-export type AppThunk<ReturnType = void> = ThunkAction<
-    ReturnType,
-    RootState,
-    unknown,
-    Action<string>
->;
+setupListeners(store.dispatch)
